@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サッカークラブ連絡網の改善提案</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ==========================================================================
+           1. 全体の共通設定 & ネオ・ブルータリズム（4色ポップスタイル）
+           ========================================================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #F1F5F9; /* サンドグレー：ベース */
+            display: flex;
+            flex-direction: column;
+            gap: 45px;
+            margin: 0;
+            padding: 50px 0;
+            align-items: center;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* スライド自動調整用の外枠 */
+        .slide-wrapper {
+            width: 1280px;
+            height: 720px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            border: 4px solid #1E293B; /* ダークネイビーアウトライン */
+            box-shadow: 10px 10px 0px #1E293B; /* パキッとしたフラットな2Dシャドウ */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 55px 75px;
+            overflow: hidden;
+            transform-origin: center center;
+            flex-shrink: 0;
+            border-radius: 20px;
+        }
+
+        /* 背景装飾：上部のビビッドな2色ライン */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, #22C55E 0%, #FFD000 100%);
+            z-index: 10;
+        }
+
+        /* ドットパターン背景 */
+        .slide-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(#1E293B 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.03;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .slide-container > * { position: relative; z-index: 1; }
+
+        /* ==========================================================================
+           2. ポップ＆ボールドな文字スタイル（角ゴシック）
+           ========================================================================= */
+        h1, h2, h3, h4 { 
+            color: #1E293B; 
+            font-weight: 900; 
+            line-height: 1.2;
+        }
+        
+        p, li, td, th { 
+            color: #334155; 
+            font-size: 19px; 
+            font-weight: 400;
+            line-height: 1.6; 
+        }
+
+        strong {
+            color: #1E293B;
+            font-weight: 900;
+        }
+
+        /* スライドタイトル */
+        .slide-title {
+            font-size: 34px;
+            font-weight: 900; 
+            margin-bottom: 30px;
+            border-bottom: 4px solid #1E293B;
+            padding-bottom: 12px;
+            text-align: left;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            white-space: nowrap; 
+        }
+
+        .slide-title span {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 900; 
+        }
+
+        /* ポイントバッジ */
+        .slide-title span::before {
+            content: 'POINT';
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 900;
+            background-color: #22C55E;
+            color: #ffffff;
+            padding: 3px 10px;
+            border: 2px solid #1E293B;
+            border-radius: 6px;
+            box-shadow: 2px 2px 0px #1E293B;
+        }
+
+        /* ISSUEバッジ */
+        .slide-container-issue .slide-title span::before {
+            content: 'ISSUE';
+            background-color: #FFD000;
+            color: #1E293B;
+        }
+
+        /* ==========================================================================
+           3. ポップなカード＆グリッドレイアウト
+           ========================================================================= */
+        .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; }
+        .two-column { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; width: 100%; align-items: center; }
+        
+        .title-layout { text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .title-layout h1 { 
+            font-size: 64px; 
+            margin-bottom: 25px; 
+            color: #1E293B; 
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+        .title-layout h1 span {
+            color: #1E293B; 
+            border-bottom: 6px solid #FFD000; 
+        }
+        .subtitle { 
+            font-size: 26px; 
+            color: #1E293B; 
+            font-weight: 700; 
+            margin-bottom: 45px; 
+            background-color: #ffffff;
+            padding: 8px 24px;
+            border: 3px solid #1E293B;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0px #1E293B;
+        }
+
+        .card-grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; width: 100%; }
+        .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; width: 100%; }
+        
+        /* 6ページ目用の幅を絞ったグリッド（枠幅調整） */
+        .narrow-card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 3px solid #1E293B;
+            border-radius: 16px;
+            padding: 24px 28px;
+            text-align: left;
+            box-shadow: 5px 5px 0px #1E293B;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 上揃え */
+            position: relative;
+        }
+        
+        .card h3 { 
+            font-size: 21px; 
+            margin-bottom: 12px; 
+            color: #1E293B; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            font-weight: 900;
+        }
+        
+        .card-icon-wrap {
+            background-color: #FFD000; 
+            border: 2px solid #1E293B;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0px #1E293B;
+            flex-shrink: 0;
+        }
+
+        .card-icon-wrap i { color: #1E293B !important; font-size: 20px !important; }
+
+        .card-issue { background-color: #ffffff; border: 3px solid #1E293B; }
+
+        /* アラート枠 */
+        .alert-bar {
+            margin-top: 25px; 
+            background-color: #FFFDF2; 
+            border: 3px solid #FFD000; 
+            border-radius: 12px; 
+            padding: 14px 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            max-width: 650px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            justify-content: center;
+            box-shadow: 4px 4px 0px #1E293B;
+        }
+        .alert-bar p { font-size: 16px; color: #1E293B; margin: 0; font-weight: 900; line-height: 1.4; }
+
+        /* リストレイアウト */
+        .custom-bullet-list { list-style: none; display: flex; flex-direction: column; gap: 22px; }
+        .custom-bullet-list li { position: relative; padding-left: 45px; }
+        .custom-bullet-list li i { position: absolute; left: 0; top: 2px; color: #22C55E; font-size: 26px; -webkit-text-stroke: 1px #1E293B; }
+        .list-item-title { font-size: 21px; font-weight: 900; color: #1E293B; margin-bottom: 4px; }
+        .list-item-desc { font-size: 17px; color: #475569; font-weight: 500; }
+
+        /* ==========================================================================
+           4. Before/After 对比システム
+           ========================================================================= */
+        .comp-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
+        .comp-column { display: flex; flex-direction: column; gap: 12px; }
+        .comp-column-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #1E293B;
+            background-color: #F1F5F9;
+            border: 3px solid #1E293B;
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 3px 3px 0px #1E293B;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .comp-box-mini {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 3px solid #1E293B;
+            border-radius: 12px;
+            padding: 8px 12px;
+            box-shadow: 3px 3px 0px #1E293B;
+        }
+        .comp-mini-before {
+            font-size: 15px; 
+            color: #64748B;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 44%;
+            white-space: nowrap;
+        }
+        .comp-mini-before i { color: #FFD000; font-size: 16px; }
+        .comp-mini-arrow { color: #1E293B; font-size: 16px; width: 6%; text-align: center; }
+        .comp-mini-after {
+            font-size: 15px; 
+            color: #1E293B;
+            font-weight: 900;
+            background-color: #DCFCE7;
+            border: 2px solid #1E293B;
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 50%;
+            white-space: nowrap;
+        }
+        .comp-mini-after i { color: #22C55E; font-size: 16px; -webkit-text-stroke: 1px #1E293B; }
+
+        /* ==========================================================================
+           5. 懸念点と解決策 (4項目が美しく収まるよう余白・サイズを微調整)
+           ========================================================================= */
+        .risk-solution-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1.15fr; 
+            gap: 15px; 
+            width: 100%; 
+            margin-bottom: 10px; 
+        }
+        .risk-box { 
+            background-color: #ffffff; 
+            border: 3px solid #1E293B; 
+            border-left: 10px solid #FFD000; 
+            border-radius: 12px; 
+            padding: 8px 16px; 
+            box-shadow: 3px 3px 0px #1E293B; 
+        }
+        .solution-box { 
+            background-color: #DCFCE7; 
+            border: 3px solid #1E293B; 
+            border-left: 10px solid #22C55E; 
+            border-radius: 12px; 
+            padding: 8px 16px; 
+            box-shadow: 5px 5px 0px #1E293B; 
+        }
+        .rs-label { 
+            font-size: 12px; 
+            font-weight: 900; 
+            margin-bottom: 2px; 
+            display: block; 
+            color: #1E293B;
+            font-family: 'Poppins', sans-serif;
+        }
+        .rs-text { 
+            font-size: 15px; 
+            font-weight: 700; 
+            color: #1E293B; 
+            line-height: 1.4; 
+        }
+
+        .image-box { border-radius: 16px; overflow: hidden; height: 350px; width: 100%; display: flex; align-items: center; justify-content: center; background-color: #ffffff; border: 3px solid #1E293B; box-shadow: 6px 6px 0px #1E293B; }
+        .image-box img { max-width: 90%; max-height: 90%; object-fit: contain; }
+
+        /* ==========================================================================
+           6. タイムライン（ぶら下げインデントの実装）
+           ========================================================================= */
+        .timeline-container { display: flex; justify-content: space-between; position: relative; width: 100%; padding: 30px 0; }
+        .timeline-line { position: absolute; top: 45px; left: 5%; right: 5%; height: 6px; background: #1E293B; border-radius: 3px; }
+        .timeline-step { width: 31%; text-align: center; position: relative; padding: 0 10px; }
+        .timeline-dot { 
+            width: 28px; 
+            height: 28px; 
+            background: #22C55E !important; 
+            border: 4px solid #1E293B; 
+            border-radius: 50%; 
+            margin: 0 auto 15px; 
+            box-shadow: 3px 3px 0px #1E293B; 
+        }
+        .timeline-step h3 { font-size: 20px; margin-bottom: 8px; color: #1E293B; font-weight: 900; }
+        
+        /* ぶら下げインデント付きの箇条書き用スタイル */
+        .timeline-step-desc {
+            text-align: left;
+            padding: 0 5px;
+        }
+        .timeline-step-desc span {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            line-height: 1.6;
+            text-indent: -1.1em; /* 頭出しのぶら下げ効果 */
+            padding-left: 1.1em;
+            margin-bottom: 6px;
+        }
+        
+        .timeline-label {
+            font-size: 16px;
+            font-weight: 900;
+            color: #1E293B; /* ダークネイビー */
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* ページ番号（右下ポップバッジ） */
+        .page-number {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 16px;
+            color: #1E293B;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            background-color: #ffffff;
+            padding: 4px 12px;
+            border: 2px solid #1E293B;
+            border-radius: 30px;
+            box-shadow: 2px 2px 0px #1E293B;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: タイトル -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide1">
+        <div class="title-layout">
+            <div style="margin-bottom: 25px;">
+                <span style="background-color: #FFD000; padding: 15px 25px; border: 3px solid #1E293B; border-radius: 50%; box-shadow: 4px 4px 0px #1E293B; display: inline-block;">
+                    <i class="fa-solid fa-futbol" style="font-size: 60px; color: #1E293B;"></i>
+                </span>
+            </div>
+            <h1>サッカークラブ<span>連絡網の改善提案</span></h1>
+            <p class="subtitle">運営側の伝達負担を減らし、保護者へ正確に情報を届けるために</p>
+            <p style="color: #1E293B; font-size: 18px; font-weight: 900; background-color: #ffffff; padding: 4px 16px; border: 2px solid #1E293B; border-radius: 8px; box-shadow: 2px 2px 0px #1E293B;">生徒数：60名 ／ 保護者数：120名想定</p>
+        </div>
+        <div class="page-number">01 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 2: 課題① -->
+<div class="slide-wrapper">
+    <div class="slide-container slide-container-issue" id="slide2">
+        <div class="slide-title"><span>課題①：グループの広がりに伴う伝えづらさと情報の埋没</span></div>
+        <div class="content-area">
+            <div class="card-grid-2x2">
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-network-wired"></i></span>多階層の伝達ステップ</h3>
+                    <p>運営側 ➔ 役員 ➔ 学年長 ➔ 保護者と連絡をコピー・転送する手間や、遅延のリスクが起きていませんか？</p>
+                </div>
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></span>送信ミスや対象漏れの不安</h3>
+                    <p>学年やチームごとにグループが分かれているため、送り先ミスや連絡漏れの不安はありませんか？</p>
+                </div>
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-magnifying-glass"></i></span>過去情報の検索性の低さ</h3>
+                    <p>日常トークの中に重要な案内が混ざり、過去のスケジュールや持ち物を探すのに苦労していませんか？</p>
+                </div>
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-bell-slash"></i></span>通知過多と重要連絡の埋没</h3>
+                    <p>関係のない学年のやり取りまで通知されることで、大切な連絡を見落とす原因になっていませんか？</p>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">02 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 3: 課題② -->
+<div class="slide-wrapper">
+    <div class="slide-container slide-container-issue" id="slide3">
+        <div class="slide-title"><span>課題②：年度更新や日々のメンバー管理における負担</span></div>
+        <div class="content-area">
+            <div class="card-grid-3">
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-rotate-right"></i></span>毎年のグループ新設</h3>
+                    <p>年度ごとに新しくLINEグループを作り、全員を招待し直す作業に時間を取られていませんか？</p>
+                </div>
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-user-minus"></i></span>入退会ごとの名簿管理</h3>
+                    <p>期途中の入退会がある度に、グループへの招待や退会忘れの確認に手間がかかっていませんか？</p>
+                </div>
+                <div class="card card-issue">
+                    <h3><span class="card-icon-wrap"><i class="fa-solid fa-handshake-simple"></i></span>属人化する引き継ぎ</h3>
+                    <p>連絡ルールや過去のやり取りが共有しづらく、新しい担当者へ引き継ぐ際に負担になっていませんか？</p>
+                </div>
+            </div>
+            <div class="alert-bar">
+                <i class="fa-solid fa-circle-exclamation" style="color: #FFD000; font-size: 24px; flex-shrink: 0; -webkit-text-stroke: 1px #1E293B;"></i>
+                <p>これら「管理の大変さ」が、役員を引き受ける際の心理的ハードルを上げる要因になっていませんか？</p>
+            </div>
+        </div>
+        <div class="page-number">03 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 4: 今回の提案内容 -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide4">
+        <!-- 整合性の修正：「今回の一提案内容」➔「今回の提案内容」 -->
+        <div class="slide-title"><span>今回の提案内容：LINE公式アカウントの導入</span></div>
+        <div class="content-area">
+            <p style="font-size: 26px; font-weight: 900; margin-top: -18px; margin-bottom: 38px; text-align: center; color: #1E293B;">
+                <span style="border-bottom: 6px solid #22C55E; padding-bottom: 4px;">「送る側も、受け取る側も、楽チンな仕組み」へ</span>
+            </p>
+            <div class="two-column">
+                <div>
+                    <ul class="custom-bullet-list">
+                        <li><i class="fa-solid fa-circle-check"></i><div class="list-item-title">新アプリは不要</div><div class="list-item-desc">保護者は普段使い慣れたLINEのままで登録できます。</div></li>
+                        <li><i class="fa-solid fa-circle-check"></i><div class="list-item-title">トークルームはひとつだけ</div><div class="list-item-desc">所属をタグ付けで一括管理するため、グループが増えません。</div></li>
+                        <!-- ノイズのクリーンアップ：末尾の「.」をきれいに削除 -->
+                        <li><i class="fa-solid fa-circle-check"></i><div class="list-item-title">運営側からダイレクト配信</div><div class="list-item-desc">所属タグ（学年やチーム）ごとに、正確に一斉送信できます</div></li>
+                        <li><i class="fa-solid fa-circle-check"></i><div class="list-item-title">ボタン1つで情報確認</div><div class="list-item-desc">スケジュールや提出物を探す手間をゼロにします。</div></li>
+                    </ul>
+                </div>
+                <div class="image-box"><img src="line_logo.png" alt="LINE公式アカウント"></div>
+            </div>
+        </div>
+        <div class="page-number">04 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 5: Before/After -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide5">
+        <div class="slide-title"><span>LINE公式アカウントでこのように変わります</span></div>
+        <div class="content-area">
+            <div class="comp-grid-2">
+                <div class="comp-column">
+                    <!-- タイポ修正：「of ストレス」➔「のストレス」 -->
+                    <div class="comp-column-title">連絡と受信のストレスを解決！</div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>伝達ステップでの遅延</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>一斉配信で即時伝達</div></div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>宛先ミスや対象の漏れ</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>タグで正確に配信</div></div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>連絡が流れて埋もれる</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>固定メニューで解決</div></div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>他学年の通知による混乱</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>自分宛てのみ通知</div></div>
+                </div>
+                <div class="comp-column">
+                    <div class="comp-column-title">管理と引き継ぎの負担をゼロ化！</div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>毎年のグループ新設</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>ルーム更新は不要</div></div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>入退会ごとの招待・解除</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>タグ追加のみで完結</div></div>
+                    <div class="comp-box-mini"><div class="comp-mini-before"><i class="fa-solid fa-circle-xmark"></i>属人化しがちな引き継ぎ</div><div class="comp-mini-arrow">➔</div><div class="comp-mini-after"><i class="fa-solid fa-circle-check"></i>権限を渡すだけ</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">05 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 6: プラスアルファ -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide6">
+        <div class="slide-title"><span>さらに便利に使いこなすための機能</span></div>
+        <div class="content-area">
+            <div class="narrow-card-grid">
+                <div class="card" style="border-top: 6px solid #22C55E;"><h3><span class="card-icon-wrap" style="background-color: #22C55E;"><i class="fa-solid fa-comments" style="color: white !important;"></i></span>1対1の個別連絡</h3><p>他人に通知されずに運営側と保護者が個別返信可能です。</p></div>
+                <!-- 記号のクリーンアップ：不自然なドット「.」を「し、」に書き換えて自然な1文へ修正 -->
+                <div class="card" style="border-top: 6px solid #22C55E;"><h3><span class="card-icon-wrap" style="background-color: #22C55E;"><i class="fa-solid fa-clock-rotate-left" style="color: white !important;"></i></span>自動応答の設定</h3><p>夜間や仕事中は自動返信で対応し、運営のプライベートを守ります。</p></div>
+                <div class="card" style="border-top: 6px solid #22C55E;"><h3><span class="card-icon-wrap" style="background-color: #22C55E;"><i class="fa-solid fa-clipboard-question" style="color: white !important;"></i></span>よくある質問の自動化</h3><p>「雨」「持ち物」等へ自動返信するよう事前設定が可能です。</p></div>
+                <div class="card" style="border-top: 6px solid #FFD000;"><h3><span class="card-icon-wrap" style="background-color: #FFD000;"><i class="fa-solid fa-user-plus" style="color: #1E293B !important;"></i></span>体験入会募集もスムーズに</h3><p>体験参加者もタグ管理可能。きめ細かなフォローが可能です。</p></div>
+            </div>
+        </div>
+        <div class="page-number">06 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 7: コスト -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide7">
+        <div class="slide-title"><span>運用コストと2つの費用解決プラン</span></div>
+        <div class="content-area">
+            <div class="two-column" style="gap: 30px;">
+                <!-- 左側：コストバッジ内に無料プランとのシミュレーション対比を挿入 -->
+                <div class="card cost-badge" style="padding: 25px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                    <div>
+                        <p style="font-size: 20px; color: #475568; font-weight: 900; margin-bottom: 5px;">年間運用コスト</p>
+                        <div style="font-size: 64px; font-weight: 900; color: #1E293B; margin: 15px 0; font-family: 'Poppins', sans-serif; line-height: 1;">66,000<span>円</span></div>
+                        <p style="font-size: 14px; color: #475568; font-weight: bold; margin-bottom: 12px;">（ライトプラン 5,500円/月 × 12ヶ月 税込）</p>
+                    </div>
+                    <div style="border-top: 2px dashed #1E293B; padding-top: 12px; text-align: left;">
+                        <p style="font-size: 14px; font-weight: 900; color: #1E293B; margin-bottom: 6px;">
+                            <span style="background-color: #FFD000; padding: 2px 8px; border: 2px solid #1E293B; border-radius: 6px; font-size: 12px;">無料プランとの比較</span>
+                        </p>
+                        <p style="font-size: 14px; line-height: 1.4; color: #334155; margin-bottom: 4px;">
+                            ・無料プラン制限：<strong>月200通</strong>まで
+                        </p>
+                        <p style="font-size: 14px; line-height: 1.4; color: #334155; margin-bottom: 10px;">
+                            ・クラブ必要配信数：120名 × 月30回 ＝ <strong>3,600通/月</strong>
+                        </p>
+                        <div style="font-size: 13px; line-height: 1.5; color: #1E293B; font-weight: 700; background: #FFFDF2; padding: 8px 12px; border: 2px solid #FFD000; border-radius: 8px;">
+                            ※無料枠（200通）では月2回の一斉配信で上限に達しストップします。連絡を網羅するため有料契約が必須となりますが、ライトプラン（5,000通/月）なら枠内で十分に収まります。
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="card" style="border-left: 10px solid #FFD000; padding: 20px;"><p style="font-weight: 900; font-size: 18px; color: #1E293B;">【プランA】 初回会費時に上乗せ</p><p style="font-size: 15px; margin-top: 5px;">年度最初の集金時に1,500円加算します。</p></div>
+                    <!-- 記号のクリーンアップ：不自然なドット「充当.」を句点「充当。」へ修正 -->
+                    <div class="card" style="border-left: 10px solid #22C55E; padding: 20px;"><p style="font-weight: 900; font-size: 18px; color: #1E293B;">【プランB】 現在の会費（余剰）から捻出</p><p style="font-size: 15px; margin-top: 5px;">予備費等から充当。保護者への新たな追加集金はありません。</p></div>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">07 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 8: 想定される懸念点と解決策 -->
+<div class="slide-wrapper">
+    <div class="slide-container slide-container-issue" id="slide8">
+        <div class="slide-title"><span>想定される懸念点と解決策</span></div>
+        <div class="content-area">
+            <!-- 懸念01 -->
+            <div class="risk-solution-row">
+                <div class="risk-box">
+                    <span class="rs-label">懸念 01：名前の特定</span>
+                    <p class="rs-text">登録時、LINEのニックネームしか分からず誰が誰だか判断できないのでは？</p>
+                </div>
+                <div class="solution-box">
+                    <span class="rs-label">解決策</span>
+                    <p class="rs-text">「登録直後の自動アンケート」で名前を回答してもらい、運営側で手動タグ付けを行えば解決します</p>
+                </div>
+            </div>
+            <!-- 懸念02 -->
+            <div class="risk-solution-row">
+                <div class="risk-box">
+                    <span class="rs-label">懸念 02：横の繋がり</span>
+                    <p class="rs-text">公式アカウントは1対1のやり取りが基本なため、保護者同士の「横のやり取り（車出し相談など）」ができなくなるのでは？</p>
+                </div>
+                <div class="solution-box">
+                    <span class="rs-label">解決策</span>
+                    <p class="rs-text">基本的に個人間のやり取りにお任せします。もし必要と判断される場合には「LINEオープンチャット」の併用を検討します</p>
+                </div>
+            </div>
+            <!-- 懸念03 -->
+            <div class="risk-solution-row">
+                <div class="risk-box">
+                    <span class="rs-label">懸念 03：操作の習得</span>
+                    <!-- タイポ修正：「専用 of 管理画面」➔「専用の管理画面」 -->
+                    <p class="rs-text">IT操作に苦手意識が強い方が管理者となった場合でも、専用の管理画面を扱えるか不安</p>
+                </div>
+                <div class="solution-box">
+                    <span class="rs-label">解決策</span>
+                    <p class="rs-text">実務に必要なボタン操作のみを厳選した「簡単手順書」を用意。交代時も招待URLを送るだけでスムーズに完了します</p>
+                </div>
+            </div>
+            <!-- 懸念04 -->
+            <div class="risk-solution-row">
+                <div class="risk-box">
+                    <span class="rs-label">懸念 04：運用費用</span>
+                    <p class="rs-text">本当に有料プランが必要？セグメント配信などで無料枠（月200通）に抑えられないか</p>
+                </div>
+                <div class="solution-box">
+                    <span class="rs-label">解決策</span>
+                    <p class="rs-text">特定の学年に送るだけでも月に数回で超過が想定されることに加え、常に配信数を気にする心理的負担を考慮すると、有料プランが推奨されます</p>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">08 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 9: 手順 -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide9">
+        <div class="slide-title"><span>運営側の準備手順（シンプル3ステップ）</span></div>
+        <div class="content-area">
+            <div class="card-grid-3">
+                <div class="card" style="border-top: 6px solid #22C55E;">
+                    <h3>1. 管理者設定</h3>
+                    <p>公式アカウントを作成。複数人で送信・対応できる体制を整えます。権限レベルの割当て（役員の方を最高権限の「管理者」、学年長の方を「運用担当者」権限とする等）も行います。</p>
+                </div>
+                <div class="card" style="border-top: 6px solid #22C55E;">
+                    <h3>2. 案内とタグ回答</h3>
+                    <p>QRコードを配布。登録時に学年アンケートに回答してもらい自動でタグを付与します。もちろん、管理者側でタグ付けも可能です。</p>
+                </div>
+                <div class="card" style="border-top: 6px solid #22C55E;">
+                    <h3>3. 運用ルールの検討・整備</h3>
+                    <p>配信時間（朝9時〜夜20時）や権限（誰が何を配信するか）、夜間の自動応答の整備に加え、保護者側のリアクションルール（スタンプ返信の禁止）など、運営と保護者双方の負担を軽減するルールを事前に策定します。</p>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">09 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 10: スケジュール -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide10">
+        <div class="slide-title"><span>移行スケジュール例</span></div>
+        <div class="content-area">
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                <div class="timeline-step">
+                    <div class="timeline-dot"></div>
+                    <h3>1〜2ヶ月目：準備・テスト</h3>
+                    <span class="timeline-label">★スモールスタート期間</span>
+                    <div class="timeline-step-desc">
+                        <span>・アカウント開設 and 配信ルール調整</span>
+                        <span>・例えば「小学3年生のみ」を対象に、初期費用なしの無料プランでお試し運用し課題を洗い出し</span>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-dot"></div>
+                    <h3>3ヶ月目：全体案内</h3>
+                    <span class="timeline-label">★全体周知と登録サポート</span>
+                    <div class="timeline-step-desc">
+                        <span>・全保護者へ説明資料配布と登録案内</span>
+                        <span>・既存グループと並行運用しながら、不慣れな保護者をしっかりサポート</span>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-dot"></div>
+                    <h3>4ヶ月目：稼働・定着</h3>
+                    <span class="timeline-label">★完全システム一本化</span>
+                    <div class="timeline-step-desc">
+                        <span>・公式連絡への移行を完了し、既存グループを順次閉鎖</span>
+                        <span>・運営交代を見据えた引き継ぎ手順書の整理とマニュアル化</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-number">10 / 11</div>
+    </div>
+</div>
+
+<!-- Slide 11: 締め -->
+<div class="slide-wrapper">
+    <div class="slide-container" id="slide11" style="background-image: url('soccer_illust.png'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
+        <!-- 読みやすさ向上のための半透明のホワイトマスク -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.88); z-index: 0;"></div>
+        
+        <div class="title-layout" style="position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <h2 style="font-size: 46px; margin-bottom: 35px; font-weight: 900; white-space: nowrap; color: #1E293B;">最後までご覧いただきありがとうございました</h2>
+            <p style="font-size: 20px; color: #1E293B; font-weight: 900; white-space: nowrap; line-height: 1.5;">
+                運営側の管理コストを最小限に抑え、子どもたちがのびのびとサッカーを楽しめる環境を無理なく支えましょう。
+            </p>
+            <div style="margin-top: 50px; border-top: 4px solid #1E293B; padding-top: 30px; width: 65%;">
+                <p style="color: #475568; font-size: 19px; font-weight: 900;">ご質問やテスト運用の進め方について、ご相談をお待ちしております。</p>
+            </div>
+        </div>
+        <div class="page-number">11 / 11</div>
+    </div>
+</div>
+
+<script>
+    function adjustSlides() {
+        const wrappers = document.querySelectorAll('.slide-wrapper');
+        const baseWidth = 1280;
+        const windowWidth = window.innerWidth;
+        const padding = 30; 
+        const targetWidth = windowWidth - padding;
+        wrappers.forEach(wrapper => {
+            const container = wrapper.querySelector('.slide-container');
+            if (!container) return;
+            if (targetWidth < baseWidth) {
+                const scale = targetWidth / baseWidth;
+                container.style.transform = `scale(${scale})`;
+                wrapper.style.width = `${targetWidth}px`;
+                wrapper.style.height = `${720 * scale}px`;
+            } else {
+                container.style.transform = 'none';
+                wrapper.style.width = `${baseWidth}px`;
+                wrapper.style.height = `720px`;
+            }
+        });
+    }
+    window.addEventListener('resize', adjustSlides);
+    window.addEventListener('DOMContentLoaded', adjustSlides);
+</script>
+
+</body>
+</html>
